@@ -1,0 +1,15 @@
+displayName: Coraza WAF
+runtime: wasm
+type: middleware
+summary: Coraza WAF http-wasm middleware (Coraza v3.7.0, OWASP CRS 4.25.0 embedded)
+# Must match the wasm filename as it sits NEXT TO this manifest, not the path
+# in build/. The release zip is packed flat (zip -j), and Traefik's
+# experimental.localPlugins reads both files from one directory, so the
+# manifest and the binary are always siblings.
+wasmPath: coraza-http-wasm.wasm
+testData:
+  directives:
+    - SecRuleEngine On
+    - SecDebugLog /dev/stdout
+    - SecDebugLogLevel 9
+    - SecRule REQUEST_URI "@streq /admin" "id:101,phase:1,log,deny,status:403"

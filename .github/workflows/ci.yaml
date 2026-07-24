@@ -13,6 +13,10 @@ on:
     paths-ignore:
       - "**/*.md"
       - "LICENSE"
+  # Lets the full build + FTW suite be re-run on demand. Without it the only
+  # triggers are a push to main and a tag, so re-validating an unchanged tree
+  # (e.g. after a toolchain or upstream-dependency change) needs a dummy commit.
+  workflow_dispatch:
 
 env:
   GO_VERSION: "1.25"
@@ -64,11 +68,27 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push build artifact to release
-        # Triggered only on tag creation
+        # Triggered only on tag creation.
+        #
+        # The zip is a self-contained Traefik plugin bundle: .traefik.yml next
+        # to the wasm it names in wasmPath, packed flat (-j). Consumers unpack
+        # it into one directory and point Traefik at that directory. Ours is
+        # the Maestro3 monorepo, which downloads this asset by tag, verifies it
+        # against the checksums file below, and bakes it into the
+        # coraza-http-wasm image that Traefik loads via
+        # experimental.localPlugins. The checksums are the integrity gate
+        # between a merge here and the wasm reaching the cluster, so they are
+        # published as a separate asset rather than computed at consume time.
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         run: |
           tag="${GITHUB_REF#refs/tags/}"
-          zip -j build/coraza-http-wasm-${tag}.zip build/coraza-http-wasm.wasm
-          gh release upload ${tag} ./build/coraza-http-wasm-${tag}.zip --clobber
+          zip -j build/coraza-http-wasm-${tag}.zip .traefik.yml build/coraza-http-wasm.wasm LICENSE
+          # Checksum both the bundle and the bare wasm: consumers verify the
+          # zip, humans comparing a local build verify the wasm.
+          (cd build && sha256sum "coraza-http-wasm-${tag}.zip" coraza-http-wasm.wasm \
+            > "coraza-http-wasm-${tag}-checksums.txt")
+          gh release upload ${tag} \
+            "./build/coraza-http-wasm-${tag}.zip" \
+            "./build/coraza-http-wasm-${tag}-checksums.txt" --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
