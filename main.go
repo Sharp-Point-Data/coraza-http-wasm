@@ -129,6 +129,11 @@ func errorCb(host api.Host) func(types.MatchedRule) {
 			host.Log(api.LogLevelInfo, logMsg)
 		case types.RuleSeverityDebug:
 			host.Log(api.LogLevelDebug, logMsg)
+		default:
+			// Since coraza v3.4, rules without an explicit severity action have
+			// RuleSeverityUnset (-1); they must still reach the error log
+			// (e.g. go-ftw's log-marker rule).
+			host.Log(api.LogLevelError, logMsg)
 		}
 	}
 }

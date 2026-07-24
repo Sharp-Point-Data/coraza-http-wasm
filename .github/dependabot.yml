@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # Root module: coraza engine, CRS ruleset package, http-wasm SDKs, wazero.
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      coraza:
+        patterns:
+          - "github.com/corazawaf/*"
+
+  # FTW test module: CRS test yamls (keep in lockstep with the root module's
+  # coraza-coreruleset version) and go-ftw.
+  - package-ecosystem: gomod
+    directory: /testing/coreruleset
+    schedule:
+      interval: weekly
+    groups:
+      coraza:
+        patterns:
+          - "github.com/corazawaf/*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

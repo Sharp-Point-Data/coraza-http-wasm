@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/http-wasm/http-wasm-host-go/handler"
 	nethttp "github.com/http-wasm/http-wasm-host-go/handler/nethttp"
@@ -56,7 +57,15 @@ func ExampleMain() {
 
 	req, _ := http.NewRequest("GET", fmt.Sprintf("http://localhost%s?key=<alert>", srvAddress), nil)
 
-	res, err := http.DefaultClient.Do(req)
+	// The server binds asynchronously; retry briefly until it accepts connections.
+	var res *http.Response
+	for i := 0; i < 50; i++ {
+		res, err = http.DefaultClient.Do(req)
+		if err == nil {
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
 	if err != nil {
 		log.Fatalf("Failed to call the server: %s", err.Error()) // nolint: gocritic
 	}

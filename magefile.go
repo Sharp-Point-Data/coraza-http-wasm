@@ -21,8 +21,8 @@ import (
 var Default = Build
 
 var (
-	minGoVersion     = "1.22"
-	minTinygoVersion = "0.33.0"
+	minGoVersion     = "1.25"
+	minTinygoVersion = "0.39.0"
 	golangCILintVer  = "v1.61.0" // https://github.com/golangci/golangci-lint/releases
 	gosImportsVer    = "v0.3.8"  // https://github.com/rinchsan/gosimports/releases/tag/v0.3.1
 )
@@ -134,7 +134,15 @@ func Build() error {
 		return err
 	}
 
-	err := sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm-raw.wasm"), "-opt=2", "-gc=custom", "-tags='custommalloc no_fs_access'", "-scheduler=none", "--no-debug", "-target=wasip1")
+	// wasip1-8mb-stack.json inherits the wasip1 target but raises the main
+	// stack from wasm-ld's 64KB default: loading the full CRS at startup
+	// compiles regexes recursively and overflows a 64KB stack. Note the CLI
+	// -stack-size flag does not affect the main stack. -buildmode=wasi-legacy
+	// keeps the module callable after main() returns (TinyGo >= 0.35 would
+	// otherwise proc_exit). -gc=boehm is required: TinyGo's default precise
+	// GC exhibits multi-second (up to 30s+) stop-the-world pauses on this
+	// workload's ~65MB heap; with Boehm the full FTW suite runs ~14x faster.
+	err := sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm-raw.wasm"), "-opt=2", "-gc=boehm", "-buildmode=wasi-legacy", "-tags='no_fs_access'", "-scheduler=none", "--no-debug", "-target=wasip1-8mb-stack.json")
 	if err != nil {
 		return err
 	}
@@ -152,7 +160,11 @@ func patchWasm(inPath, outPath string, initialPages int) error {
 		return err
 	}
 
-	mod.MemorySection.Min = uint32(initialPages)
+	// Only ever raise the initial memory; shrinking below what the linker
+	// declared would corrupt the module (stack + data may exceed it).
+	if mod.MemorySection.Min < uint32(initialPages) {
+		mod.MemorySection.Min = uint32(initialPages)
+	}
 
 	out := binary.EncodeModule(mod)
 	if err = os.WriteFile(outPath, out, 0644); err != nil {
@@ -214,5 +226,7 @@ func FTW() error {
 	}
 	defer os.Remove(binDst)
 
-	return sh.RunV("go", "test", "-count=1", "./testing/coreruleset")
+	// ~4k CRS regression tests through wazero; well beyond go test's default
+	// 10m timeout on slower machines.
+	return sh.RunV("go", "test", "-count=1", "-timeout=60m", "./testing/coreruleset")
 }

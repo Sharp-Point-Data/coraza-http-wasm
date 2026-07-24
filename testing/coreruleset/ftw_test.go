@@ -6,10 +6,12 @@ import (
 	_ "embed"
 	"fmt"
 	"io/fs"
+	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"testing"
@@ -17,10 +19,10 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 	crstests "github.com/corazawaf/coraza-coreruleset/v4/tests"
-	"github.com/coreruleset/go-ftw/config"
-	"github.com/coreruleset/go-ftw/output"
-	"github.com/coreruleset/go-ftw/runner"
-	"github.com/coreruleset/go-ftw/test"
+	"github.com/coreruleset/go-ftw/v2/config"
+	"github.com/coreruleset/go-ftw/v2/output"
+	"github.com/coreruleset/go-ftw/v2/runner"
+	"github.com/coreruleset/go-ftw/v2/test"
 	"github.com/http-wasm/http-wasm-host-go/api"
 	"github.com/http-wasm/http-wasm-host-go/handler"
 	wasm "github.com/http-wasm/http-wasm-host-go/handler/nethttp"
@@ -116,7 +118,7 @@ Include @owasp_crs/*.conf
 		if err != nil {
 			return err
 		}
-		ftwt, err := test.GetTestFromYaml(yaml)
+		ftwt, err := test.GetTestFromYaml(yaml, path)
 		if err != nil {
 			return err
 		}
@@ -139,6 +141,15 @@ Include @owasp_crs/*.conf
 		t.Fatal(err)
 	}
 
+	// Warm up the middleware: the first request on a fresh connection pays a
+	// full WAF+CRS re-initialization on a cold guest instance (~1s). Absorb it
+	// here so go-ftw's first marker request doesn't race its read timeout.
+	if res, err := http.Get(s.URL + "/status/200"); err != nil {
+		t.Fatalf("warm-up request failed: %v", err)
+	} else {
+		res.Body.Close()
+	}
+
 	host := u.Hostname()
 	port, _ := strconv.Atoi(u.Port())
 	// TODO(anuraaga): Don't use global config for FTW for better support of programmatic.
@@ -147,18 +158,28 @@ Include @owasp_crs/*.conf
 	if err != nil {
 		t.Fatal(err)
 	}
-	cfg.WithLogfile(errorPath)
+	cfg.LogFile = errorPath
 	cfg.TestOverride.Overrides.DestAddr = &host
 	cfg.TestOverride.Overrides.Port = &port
 
-	res, err := runner.Run(cfg, tests, runner.RunnerConfig{
-		ShowTime:    false,
-		ReadTimeout: 5 * time.Second,
-	}, output.NewOutput("quiet", os.Stdout))
+	runnerConfig := config.NewRunnerConfiguration(cfg)
+	runnerConfig.ShowTime = false
+	// Debugging aid: FTW_INCLUDE=^942150 go test ... runs a subset of tests.
+	if v := os.Getenv("FTW_INCLUDE"); v != "" {
+		runnerConfig.Include = regexp.MustCompile(v)
+	}
+	// Generous: a cold guest instance re-initializes the full CRS before
+	// answering its first request, which can exceed a few seconds on loaded
+	// CI machines.
+	runnerConfig.ReadTimeout = 30 * time.Second
+
+	res, err := runner.Run(runnerConfig, tests, output.NewOutput("quiet", os.Stdout))
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	t.Logf("FTW stats: run=%d success=%d failed=%d skipped=%d totaltime=%v",
+		res.Stats.Run, len(res.Stats.Success), len(res.Stats.Failed), len(res.Stats.Skipped), res.Stats.TotalTime)
 	if len(res.Stats.Failed) > 0 {
 		t.Errorf("failed tests: %v", res.Stats.Failed)
 	}
