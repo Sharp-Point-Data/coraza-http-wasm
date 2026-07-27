@@ -12,8 +12,12 @@ env:
   # deps (kaptinlin/go-i18n, kaptinlin/jsonschema) now floor at go 1.26.5, so
   # go mod tidy fails on 1.25. The pinned CI stays on 1.25 with coraza v3.7.0.
   GO_VERSION: "1.26"
-  # Keep in sync with ci.yaml — TinyGo 0.39.x pinned (0.40/0.41 break under wazero).
-  TINYGO_VERSION: "0.39.0"
+  # Deliberately ahead of ci.yaml's 0.39.0: TinyGo 0.41.0+ is the first release
+  # that supports Go 1.26, which coraza@main now requires. 0.41 crashed under
+  # wazero at instantiation in earlier tests, but those predated the 8MB-stack
+  # ldflags fix in wasip1-8mb-stack.json — this canary is the retest. If it
+  # builds and passes FTW, it's the green light to bump the pinned CI too.
+  TINYGO_VERSION: "0.41.1"
 
 jobs:
   test:
