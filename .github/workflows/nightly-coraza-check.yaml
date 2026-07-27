@@ -8,7 +8,10 @@ on:
     - cron: "0 4 * * *"
 
 env:
-  GO_VERSION: "1.25"
+  # Ahead of ci.yaml's 1.25 on purpose: this canary tracks coraza@main, whose
+  # deps (kaptinlin/go-i18n, kaptinlin/jsonschema) now floor at go 1.26.5, so
+  # go mod tidy fails on 1.25. The pinned CI stays on 1.25 with coraza v3.7.0.
+  GO_VERSION: "1.26"
   # Keep in sync with ci.yaml — TinyGo 0.39.x pinned (0.40/0.41 break under wazero).
   TINYGO_VERSION: "0.39.0"
 
