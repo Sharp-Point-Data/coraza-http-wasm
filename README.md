@@ -101,6 +101,13 @@ The workflow creates the release as a **draft**. Draft assets are only
 downloadable by accounts with push access, so publish the release before any
 unauthenticated consumer tries to fetch it.
 
+The same tag is also pushed as a container image to
+`ghcr.io/sharp-point-data/coraza-http-wasm:<tag>` (see [Dockerfile](Dockerfile)),
+for consumers that would rather pull an image than download and unzip the
+release asset — e.g. a Kubernetes initContainer copying the plugin into
+Traefik's local-plugin directory. Unlike the release, this isn't gated behind
+a draft/publish step, so it's live as soon as the tag's CI run finishes.
+
 Load it as a local plugin rather than through the public Traefik plugin
 catalog. Unpack the bundle so the manifest and the binary sit together under
 Traefik's plugin directory:
