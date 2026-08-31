@@ -8,7 +8,7 @@ require (
 	github.com/http-wasm/http-wasm-guest-tinygo v0.4.0
 	github.com/http-wasm/http-wasm-host-go v0.7.0
 	github.com/jcchavezs/mergefs v0.1.1
-	github.com/mccutchen/go-httpbin/v2 v2.18.3
+	github.com/mccutchen/go-httpbin/v2 v2.25.0
 	github.com/stretchr/testify v1.11.1
 	github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834
 	github.com/tetratelabs/wazero v1.12.0
