@@ -8,9 +8,11 @@ on:
     - cron: "0 4 * * *"
 
 env:
-  # Ahead of ci.yaml's 1.25 on purpose: this canary tracks coraza@main, whose
-  # deps (kaptinlin/go-i18n, kaptinlin/jsonschema) now floor at go 1.26.5, so
-  # go mod tidy fails on 1.25. The pinned CI stays on 1.25 with coraza v3.7.0.
+  # Ahead of ci.yaml's 1.25 on purpose, and capped at the top of TinyGo 0.41.1's
+  # supported range (its builder/config.go sets minorMax = 26). Go 1.27.0 is out
+  # but no TinyGo release accepts it yet - that support sits on TinyGo's
+  # unreleased dev branch - so raising this only moves the failure from tidy to
+  # the build step. Revisit when TinyGo 0.42 ships.
   GO_VERSION: "1.26"
   # Deliberately ahead of ci.yaml's 0.39.0: TinyGo 0.41.0+ is the first release
   # that supports Go 1.26, which coraza@main now requires. 0.41 crashed under
@@ -43,8 +45,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # No -u here on purpose: it upgraded the entire module graph to latest
+      # rather than just coraza, which is how kaptinlin/jsonschema v0.9.9
+      # (go >= 1.27, tagged 2026-08-27) started failing this job on 2026-08-28.
+      # coraza@main itself declares go 1.25.0 and pins jsonschema v0.4.6, so a
+      # plain go get + MVS keeps the canary testing coraza@main instead of every
+      # transitive dependency at its bleeding edge.
       - name: Fetch last coraza version
-        run: go get -u github.com/corazawaf/coraza/v3@${{ steps.coraza-latest-commit.outputs.value }} && go mod tidy
+        run: go get github.com/corazawaf/coraza/v3@${{ steps.coraza-latest-commit.outputs.value }} && go mod tidy
 
       - name: Build binary
         run: go run mage.go build
