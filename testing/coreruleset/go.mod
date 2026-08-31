@@ -3,7 +3,7 @@ module github.com/jcchavezs/coraza-http-wasm/testing/coreruleset
 go 1.25.0
 
 require (
-	github.com/bmatcuk/doublestar/v4 v4.6.1
+	github.com/bmatcuk/doublestar/v4 v4.10.0
 	github.com/corazawaf/coraza-coreruleset/v4 v4.25.0
 	github.com/coreruleset/go-ftw/v2 v2.5.0
 	github.com/http-wasm/http-wasm-host-go v0.7.0
