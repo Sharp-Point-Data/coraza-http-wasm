@@ -41,7 +41,7 @@ jobs:
           cache: true
 
       - name: Install tinygo
-        uses: acifani/setup-tinygo@v1
+        uses: acifani/setup-tinygo@v3
         with:
           tinygo-version: ${{ env.TINYGO_VERSION }}
 
