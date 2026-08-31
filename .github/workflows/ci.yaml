@@ -104,7 +104,7 @@ jobs:
         # Public registry, but still gated to tag pushes: no reason to publish
         # an image for every commit to main.
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
