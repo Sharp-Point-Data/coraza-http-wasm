@@ -1,11 +1,11 @@
 module github.com/jcchavezs/coraza-http-wasm/testing/coreruleset
 
-go 1.25.0
+go 1.25.7
 
 require (
 	github.com/bmatcuk/doublestar/v4 v4.10.2
 	github.com/corazawaf/coraza-coreruleset/v4 v4.25.0
-	github.com/coreruleset/go-ftw/v2 v2.5.0
+	github.com/coreruleset/go-ftw/v2 v2.6.0
 	github.com/http-wasm/http-wasm-host-go v0.7.0
 	github.com/mccutchen/go-httpbin/v2 v2.25.0
 	github.com/rs/zerolog v1.35.1
@@ -41,9 +41,9 @@ require (
 	github.com/yargevad/filepathx v1.0.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	go.yaml.in/yaml/v4 v4.0.0-rc.4 // indirect
-	golang.org/x/crypto v0.52.0 // indirect
+	golang.org/x/crypto v0.55.0 // indirect
 	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f // indirect
-	golang.org/x/net v0.55.0 // indirect
-	golang.org/x/sys v0.45.0 // indirect
+	golang.org/x/net v0.58.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 )
