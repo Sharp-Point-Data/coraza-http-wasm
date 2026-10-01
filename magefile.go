@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -228,5 +229,13 @@ func FTW() error {
 
 	// ~4k CRS regression tests through wazero; well beyond go test's default
 	// 10m timeout on slower machines.
-	return sh.RunV("go", "test", "-count=1", "-timeout=60m", "./testing/coreruleset")
+	//
+	// testing/coreruleset is its own module and there is no go.work tying it
+	// to the root (Dependabot bumps module go directives but never go.work,
+	// which broke CI), so the tests have to run from inside that directory.
+	cmd := exec.Command("go", "test", "-count=1", "-timeout=60m", ".")
+	cmd.Dir = filepath.Join("testing", "coreruleset")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }

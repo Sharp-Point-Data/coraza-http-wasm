@@ -60,7 +60,7 @@ docker run --rm -v "$PWD:/src" -w /src -e GOFLAGS=-buildvcs=false \
 The FTW suite (~4k CRS regression tests through wazero) is the real gate —
 "builds" alone proves very little in this repo. With `-gc=boehm` it completes
 in about a minute; most wall time is compiling the wasm and the Go test deps.
-`FTW_INCLUDE='^942150' go test ./testing/coreruleset` runs a subset when
+`cd testing/coreruleset && FTW_INCLUDE='^942150' go test .` runs a subset when
 debugging individual rules. When bumping CRS, expect a handful of new test
 failures — classify each (response-body class, Go-vs-Apache platform
 difference, known Coraza issue) and extend `.ftw.yml` with a documented
