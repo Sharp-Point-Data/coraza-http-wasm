@@ -1,6 +1,6 @@
 module github.com/corazawaf/coraza-http-wasm
 
-go 1.25.0
+go 1.25.7
 
 require (
 	github.com/corazawaf/coraza-coreruleset/v4 v4.25.0
@@ -21,11 +21,12 @@ require (
 	github.com/gotnospirit/messageformat v0.0.0-20221001023931-dfe49f1eb092 // indirect
 	github.com/kaptinlin/go-i18n v0.1.4 // indirect
 	github.com/kaptinlin/jsonschema v0.4.6 // indirect
+	github.com/miekg/dns v1.1.68 // indirect
 	github.com/valllabh/ocsf-schema-golang v1.0.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.45.0 // indirect
-	golang.org/x/text v0.37.0 // indirect
+	golang.org/x/sync v0.22.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/text v0.41.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 
@@ -36,6 +37,6 @@ require (
 	github.com/tidwall/gjson v1.19.0
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/net v0.58.0 // indirect
 	rsc.io/binaryregexp v0.2.0 // indirect
 )
