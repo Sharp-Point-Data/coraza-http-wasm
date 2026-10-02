@@ -8,7 +8,7 @@ full test loop below.
 
 | Component | Pinned at | Coupling |
 |---|---|---|
-| coraza/v3 | v3.7.0 | v3.4.0+ requires Go 1.25 → TinyGo ≥ 0.39 |
+| coraza/v3 | v3.8.1 | v3.4.0+ requires Go 1.25 → TinyGo ≥ 0.39 |
 | coraza-coreruleset/v4 | v4.25.0 | ≥ v4.24.1 requires coraza ≥ v3.4.0 (`SecRequestBodyJsonDepthLimit` in `@coraza.conf-recommended`) |
 | Go | 1.25.x | driven by coraza's go.mod |
 | TinyGo | **0.39.x (pinned)** | 0.40/0.41 guests crash under wazero at instantiation (OOB in `runtime.initAll`) — re-test before bumping |

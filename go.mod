@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/corazawaf/coraza-coreruleset/v4 v4.25.0
-	github.com/corazawaf/coraza/v3 v3.8.0
+	github.com/corazawaf/coraza/v3 v3.8.1
 	github.com/http-wasm/http-wasm-guest-tinygo v0.4.0
 	github.com/http-wasm/http-wasm-host-go v0.7.0
 	github.com/jcchavezs/mergefs v0.1.1
