@@ -20,8 +20,10 @@ on:
 
 env:
   GO_VERSION: "1.25"
-  # TinyGo 0.39.x is pinned deliberately: 0.40/0.41 guests crash under wazero
-  # at instantiation (OOB in runtime.initAll). Re-test before bumping.
+  # TinyGo 0.39.0 is pinned deliberately. The nightly canary runs 0.41.1 with
+  # Go 1.26 and passes the full loop (the earlier 0.40/0.41 wazero crash at
+  # instantiation predated the 8 MB stack fix), but bumping here still needs
+  # a local Docker build and a run under real Traefik. See UPDATING.md.
   TINYGO_VERSION: "0.39.0"
 
 jobs:

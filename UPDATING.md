@@ -4,20 +4,37 @@ This connector compiles Coraza + OWASP CRS to WebAssembly with TinyGo. The
 pieces are tightly coupled, so bump them together and always verify with the
 full test loop below.
 
-## Version coupling (verified July 2026)
+## Version coupling (verified October 2026)
 
 | Component | Pinned at | Coupling |
 |---|---|---|
 | coraza/v3 | v3.8.1 | v3.4.0+ requires Go 1.25 → TinyGo ≥ 0.39 |
 | coraza-coreruleset/v4 | v4.25.0 | ≥ v4.24.1 requires coraza ≥ v3.4.0 (`SecRequestBodyJsonDepthLimit` in `@coraza.conf-recommended`) |
-| Go | 1.25.x | driven by coraza's go.mod |
-| TinyGo | **0.39.x (pinned)** | 0.40/0.41 guests crash under wazero at instantiation (OOB in `runtime.initAll`) — re-test before bumping |
-| go-ftw (testing module) | v2.x | v0.6.x panics on current CRS test yamls |
+| Go | 1.25.x | driven by coraza's go.mod; go-ftw v2.6.0 needs ≥ 1.25.7 |
+| TinyGo | 0.39.0 (pinned in ci.yaml) | 0.41.1 + Go 1.26 passes the full loop in the nightly canary; the earlier 0.40/0.41 wazero instantiation crash predated the 8 MB stack fix. Bumping the pin still needs a local Docker build and a run under real Traefik |
+| go-ftw (testing module) | v2.6.0 | v0.6.x panics on current CRS test yamls |
 
 Dependabot (`.github/dependabot.yml`) raises weekly PRs for the Go modules in
 `/` and `/testing/coreruleset`; CI runs the full loop on each PR. TinyGo and Go
 versions are pinned in `.github/workflows/ci.yaml` and
 `nightly-coraza-check.yaml` and must be bumped manually.
+
+## Files to update on every bump
+
+Dependabot only touches `go.mod` and `go.sum`. Everything below is maintained
+by hand and goes stale silently (the README sat on v3.7.0 through two Coraza
+releases), so update it in the same PR as the bump:
+
+| File | What to update |
+|---|---|
+| `README.md` | "Current state" table, the "What diverges from upstream" bullet, and the test count if the FTW total moved |
+| `.traefik.yml` | `summary` line (Coraza and CRS versions); it ships inside the release bundle |
+| `UPDATING.md` | coupling table above and its "verified" date |
+| `.github/workflows/ci.yaml`, `nightly-coraza-check.yaml` | Go / TinyGo pins and the comments justifying them |
+| `magefile.go` | `minGoVersion` / `minTinygoVersion` |
+
+Release tags track the Coraza version (v3.7.0, v3.8.0, v3.8.1), so a Coraza
+bump is normally followed by a tag of the same name.
 
 ## Notable build specifics
 
@@ -57,7 +74,7 @@ docker run --rm -v "$PWD:/src" -w /src -e GOFLAGS=-buildvcs=false \
     go run mage.go ftw'
 ```
 
-The FTW suite (~4k CRS regression tests through wazero) is the real gate —
+The FTW suite (~4.6k CRS regression tests through wazero) is the real gate —
 "builds" alone proves very little in this repo. With `-gc=boehm` it completes
 in about a minute; most wall time is compiling the wasm and the Go test deps.
 `cd testing/coreruleset && FTW_INCLUDE='^942150' go test .` runs a subset when

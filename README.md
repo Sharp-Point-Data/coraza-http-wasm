@@ -8,15 +8,15 @@ Sharp Point Data's fork of [jcchavezs/coraza-http-wasm](https://github.com/jccha
 
 | | |
 |---|---|
-| Coraza | v3.7.0 |
+| Coraza | v3.8.1 |
 | OWASP CRS | v4.25.0 (embedded in the binary) |
 | Go / TinyGo | 1.25 / 0.39.0 (both pinned) |
 | Build output | `build/coraza-http-wasm.wasm`, ~3.5 MB |
-| Test gate | ~4.6k CRS regression tests (go-ftw) on every push and PR |
+| Test gate | ~4.6k CRS regression tests (go-ftw) on every code push and PR |
 
 What diverges from upstream v0.3.0:
 
-- Coraza v3.2.1 → v3.7.0 and CRS v4.0.0 → v4.25.0. The CRS jump is 25 minor
+- Coraza v3.2.1 → v3.8.1 and CRS v4.0.0 → v4.25.0. The CRS jump is 25 minor
   releases of rule tightening, so expect a different false-positive profile.
 - The wasilibs matchers and `nottinygc` are gone, replaced by Coraza's pure-Go
   operators. go-re2 retired TinyGo support in v1.12.0, nottinygc is archived,
@@ -27,11 +27,12 @@ What diverges from upstream v0.3.0:
   keeps those in a separate `coraza-http-wasm-traefik` repo; here they live
   alongside the source.
 
-**The build flags are load-bearing, not preferences** — the default GC stalls
+**The build flags are requirements, not tuning knobs.** The default GC stalls
 for 30s+ on this workload's ~65 MB heap, and a 64 KB stack overflows while
 compiling CRS regexes at startup. [UPDATING.md](UPDATING.md) documents the
-version coupling, each flag's reason, and the bump playbook. Read it before
-changing a dependency or a toolchain pin.
+version coupling, each flag's reason, the bump playbook, and the checklist of
+files that carry version numbers by hand. Read it before changing a dependency
+or a toolchain pin.
 
 ## Getting started
 
