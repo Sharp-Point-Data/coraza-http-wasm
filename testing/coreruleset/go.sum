@@ -12,8 +12,8 @@ github.com/corazawaf/coraza-coreruleset/v4 v4.25.0 h1:tqFO1lfVpTiyWtlN618OXpZMfw
 github.com/corazawaf/coraza-coreruleset/v4 v4.25.0/go.mod h1:nRuGXITxOPvsLF2VxaTB7pYok8QB8BitX3ZenXcUryY=
 github.com/coreruleset/ftw-tests-schema/v2 v2.3.0 h1:zs2US8z7sDba1O//qgaD1qj5R5B90m6FjHuRAuKK03g=
 github.com/coreruleset/ftw-tests-schema/v2 v2.3.0/go.mod h1:wvQApSsBz7qy0aGb88UwYWOnu6k6DlyPsJ3QoJ+tRhA=
-github.com/coreruleset/go-ftw/v2 v2.6.0 h1:YqSM9ajMWCAZxhT2k9xZh0B5u9r/t9Ze4lI9JeIHLmw=
-github.com/coreruleset/go-ftw/v2 v2.6.0/go.mod h1:aEKN/4uVBY9GvwnLaWPzeRwZQh6LiR9+nL3z+YHg+4k=
+github.com/coreruleset/go-ftw/v2 v2.6.1 h1:iF2Uyysehhg5dlxcWxRZWiPFSZromjBfZ6YlqjBtE+M=
+github.com/coreruleset/go-ftw/v2 v2.6.1/go.mod h1:pzgtb9CrTNr5F9JAUjZ1ck9tOHbVh7YCGybj+re7UUo=
 github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
 github.com/frankban/quicktest v1.14.6/go.mod h1:4ptaffx2x8+WTWXmUCuVU6aPUX1/Mz7zb5vbUoiM6w0=
 github.com/fsnotify/fsnotify v1.9.0 h1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S9k=
