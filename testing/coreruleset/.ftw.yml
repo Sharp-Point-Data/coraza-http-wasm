@@ -140,3 +140,10 @@ testoverride:
     920640-4: "Test yaml itself notes it is broken under go-ftw HTTP/1.1 (needs HTTP/2)"
     920640-5: "Test yaml itself notes it is broken under go-ftw HTTP/1.1 (needs HTTP/2)"
     932207-7: "match_regex expects exact matched-data log formatting; connector log format differs"
+    # --- Added with go-ftw 2.6.0 -> 2.6.1 (October 2026) ---
+    # go-ftw 2.6.1 refuses to build a request whose header value holds a raw
+    # CR/LF (coreruleset/go-ftw#670) and aborts the whole run with a fatal
+    # error rather than failing the one test. 921140-1 deliberately sends
+    # "Headerdata\rInjectedHeader: ..." to probe response splitting, so it can
+    # no longer be sent through go-ftw at all. coraza-proxy-wasm skips it too.
+    921140-1: "raw CR in header value; go-ftw >= 2.6.1 rejects the request before sending (coreruleset/go-ftw#670)"

@@ -10,9 +10,9 @@ full test loop below.
 |---|---|---|
 | coraza/v3 | v3.8.1 | v3.4.0+ requires Go 1.25 → TinyGo ≥ 0.39 |
 | coraza-coreruleset/v4 | v4.25.0 | ≥ v4.24.1 requires coraza ≥ v3.4.0 (`SecRequestBodyJsonDepthLimit` in `@coraza.conf-recommended`) |
-| Go | 1.25.x | driven by coraza's go.mod; go-ftw v2.6.0 needs ≥ 1.25.7 |
+| Go | 1.25.x | driven by coraza's go.mod; go-ftw v2.6.1 needs ≥ 1.25.7 |
 | TinyGo | 0.39.0 (pinned in ci.yaml) | 0.41.1 + Go 1.26 passes the full loop in the nightly canary; the earlier 0.40/0.41 wazero instantiation crash predated the 8 MB stack fix. Bumping the pin still needs a local Docker build and a run under real Traefik |
-| go-ftw (testing module) | v2.6.0 | v0.6.x panics on current CRS test yamls |
+| go-ftw (testing module) | v2.6.1 | v0.6.x panics on current CRS test yamls; ≥ v2.6.1 rejects raw CR/LF in header values, so CRS test 921140-1 is skipped in `.ftw.yml` |
 
 Dependabot (`.github/dependabot.yml`) raises weekly PRs for the Go modules in
 `/` and `/testing/coreruleset`; CI runs the full loop on each PR. TinyGo and Go
