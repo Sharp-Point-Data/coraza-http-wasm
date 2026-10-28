@@ -19,12 +19,16 @@ on:
   workflow_dispatch:
 
 env:
-  GO_VERSION: "1.25"
-  # TinyGo 0.39.0 is pinned deliberately. The nightly canary runs 0.41.1 with
-  # Go 1.26 and passes the full loop (the earlier 0.40/0.41 wazero crash at
-  # instantiation predated the 8 MB stack fix), but bumping here still needs
-  # a local Docker build and a run under real Traefik. See UPDATING.md.
-  TINYGO_VERSION: "0.39.0"
+  # Go 1.26 is the floor since go-httpbin v2.26.0 (test backend) and the top
+  # of TinyGo 0.41.1's supported range (builder/config.go minorMax = 26).
+  # Go 1.27 needs a TinyGo release that does not exist yet; see the canary.
+  GO_VERSION: "1.26"
+  # TinyGo 0.41.1 is the first release line that accepts Go 1.26. The earlier
+  # 0.40/0.41 wazero crash at instantiation predated the 8 MB stack fix in
+  # wasip1-8mb-stack.json; 0.41.1 was proven by the nightly canary, then by
+  # the local Docker loop and a run under real Traefik (October 2026). Bumping
+  # again needs the same loop. See UPDATING.md.
+  TINYGO_VERSION: "0.41.1"
 
 jobs:
   build:

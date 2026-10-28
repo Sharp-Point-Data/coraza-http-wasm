@@ -10,7 +10,7 @@ Sharp Point Data's fork of [jcchavezs/coraza-http-wasm](https://github.com/jccha
 |---|---|
 | Coraza | v3.8.1 |
 | OWASP CRS | v4.25.0 (embedded in the binary) |
-| Go / TinyGo | 1.25 / 0.39.0 (both pinned) |
+| Go / TinyGo | 1.26 / 0.41.1 (both pinned) |
 | Build output | `build/coraza-http-wasm.wasm`, ~3.5 MB |
 | Test gate | ~4.6k CRS regression tests (go-ftw) on every code push and PR |
 

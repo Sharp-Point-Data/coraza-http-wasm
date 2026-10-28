@@ -22,8 +22,8 @@ import (
 var Default = Build
 
 var (
-	minGoVersion     = "1.25"
-	minTinygoVersion = "0.39.0"
+	minGoVersion     = "1.26"
+	minTinygoVersion = "0.41.1"
 	golangCILintVer  = "v1.61.0" // https://github.com/golangci/golangci-lint/releases
 	gosImportsVer    = "v0.3.8"  // https://github.com/rinchsan/gosimports/releases/tag/v0.3.1
 )
