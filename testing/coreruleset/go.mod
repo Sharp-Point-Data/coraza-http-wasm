@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/bmatcuk/doublestar/v4 v4.10.3
 	github.com/corazawaf/coraza-coreruleset/v4 v4.25.0
-	github.com/coreruleset/go-ftw/v2 v2.6.1
+	github.com/coreruleset/go-ftw/v2 v2.6.2
 	github.com/http-wasm/http-wasm-host-go v0.7.0
 	github.com/mccutchen/go-httpbin/v2 v2.26.0
 	github.com/rs/zerolog v1.35.1
